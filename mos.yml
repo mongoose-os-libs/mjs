@@ -2,7 +2,7 @@ name: mjs
 type: lib
 # arch: PLATFORM
 version: 1.0
-skeleton_version: 2017-05-16
+skeleton_version: 2017-05-18
 sources:
   - src
   - ${mjs_path}/mjs.c
