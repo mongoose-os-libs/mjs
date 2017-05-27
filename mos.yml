@@ -1,6 +1,6 @@
 author: mongoose-os
 name: mjs
-descrition: JavaScript engine
+description: JavaScript engine
 type: lib
 # arch: PLATFORM
 version: 1.0
