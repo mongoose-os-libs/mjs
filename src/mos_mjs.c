@@ -6,7 +6,7 @@
 #include "fw/src/mgos_dlsym.h"
 #include "mos_mjs.h"
 
-bool mjs_init(void) {
+bool mgos_mjs_init(void) {
   /* Initialize JavaScript engine */
   int mem1, mem2, mem3;
   mem1 = mgos_get_free_heap_size();
