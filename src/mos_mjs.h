@@ -10,7 +10,7 @@ extern "C" {
 
 #include "mjs.h"
 
-void mjs_init(void);
+bool mjs_init(void);
 
 #ifdef __cplusplus
 }

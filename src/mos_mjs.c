@@ -6,7 +6,7 @@
 #include "fw/src/mgos_dlsym.h"
 #include "mos_mjs.h"
 
-void mjs_init(void) {
+bool mjs_init(void) {
   /* Initialize JavaScript engine */
   int mem1, mem2, mem3;
   mem1 = mgos_get_free_heap_size();
@@ -21,4 +21,5 @@ void mjs_init(void) {
   LOG(LL_DEBUG, ("mJS memory stat: before init: %d "
                  "after init: %d after init.js: %d",
                  mem1, mem2, mem3));
+  return true;
 }
