@@ -1,10 +1,11 @@
 author: mongoose-os
-name: mjs
 description: JavaScript engine
 type: lib
-# arch: PLATFORM
 version: 1.0
-skeleton_version: 2017-05-18
+tags:
+  - js      # Supports JavaScript
+  - c
+
 sources:
   - src
   - ${mjs_path}/mjs.c
@@ -15,5 +16,5 @@ filesystem:
   - ${mongoose_os_path}/fw/platforms/${arch}/mjs_api/api_*.js
 modules:
   - origin: https://github.com/cesanta/mjs
-tags:
-  - js      # Supports JavaScript
+
+skeleton_version: 2017-05-18
