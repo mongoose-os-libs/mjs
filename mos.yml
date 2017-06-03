@@ -14,7 +14,8 @@ filesystem:
   - ${mjs_path}/mjs/lib/api_*.js
   - ${mongoose_os_path}/fw/mjs_api/api_*.js
   - ${mongoose_os_path}/fw/platforms/${arch}/mjs_api/api_*.js
+  - "@all_libs/mjs_fs"
 modules:
   - origin: https://github.com/cesanta/mjs
 
-skeleton_version: 2017-05-18
+skeleton_version: 2017-06-03
