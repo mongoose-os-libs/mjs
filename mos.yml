@@ -15,6 +15,9 @@ filesystem:
   - ${mongoose_os_path}/fw/mjs_api/api_*.js
   - ${mongoose_os_path}/fw/platforms/${arch}/mjs_api/api_*.js
   - "@all_libs/mjs_fs"
+config_schema:
+  - ["mjs", "o", {title: "mJS settings"}]
+  - ["mjs.generate_jsc", "b", true, {title: "Generate .jsc file when executing any .js file"}]
 modules:
   - origin: https://github.com/cesanta/mjs
 
