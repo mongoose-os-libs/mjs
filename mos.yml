@@ -2,9 +2,6 @@ author: mongoose-os
 description: JavaScript engine
 type: lib
 version: 1.0
-tags:
-  - js      # Supports JavaScript
-  - c
 
 sources:
   - src
@@ -20,5 +17,9 @@ config_schema:
   - ["mjs.generate_jsc", "b", true, {title: "Generate .jsc file when executing any .js file"}]
 modules:
   - origin: https://github.com/cesanta/mjs
+
+tags:
+  - js      # Supports JavaScript
+  - c
 
 skeleton_version: 2017-06-03
