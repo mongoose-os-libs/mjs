@@ -1,1 +1,1 @@
-# Embedded JavaScript engine for Mongoose OS
+# Embedded JavaScript engine
