@@ -12,9 +12,8 @@ struct mjs *mjs = NULL;
 /*
  * Runs when all initialization (all libs + app) is done
  */
-static void s_init_done_hook(
-    enum mgos_hook_type type,
-    const struct mgos_hook_arg *arg, void *userdata) {
+static void s_init_done_hook(enum mgos_hook_type type,
+                             const struct mgos_hook_arg *arg, void *userdata) {
   int mem1, mem2;
 
   mem1 = mgos_get_free_heap_size();
@@ -23,7 +22,8 @@ static void s_init_done_hook(
     mjs_print_error(mjs, stdout, NULL, 1 /* print_stack_trace */);
   }
   mem2 = mgos_get_free_heap_size();
-  LOG(LL_DEBUG, ("mJS memory stat: before init.js: %d after init.js: %d", mem1, mem2));
+  LOG(LL_DEBUG,
+      ("mJS memory stat: before init.js: %d after init.js: %d", mem1, mem2));
 
   (void) type;
   (void) arg;
@@ -47,6 +47,7 @@ bool mgos_mjs_init(void) {
    */
   mgos_hook_register(MGOS_HOOK_INIT_DONE, s_init_done_hook, NULL);
 
-  LOG(LL_DEBUG, ("mJS memory stat: before init: %d after init: %d", mem1, mem2));
+  LOG(LL_DEBUG,
+      ("mJS memory stat: before init: %d after init: %d", mem1, mem2));
   return true;
 }
