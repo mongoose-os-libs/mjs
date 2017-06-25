@@ -1,57 +1,107 @@
-// Raw TCP/UDP API.
-
 let Net = {
-  // ## **`Net.bind(addressStr, handler)`**
-  // Bind to an address. Return value:
-  // an opaque connection pointer which should be given as a first argument to
-  // some `Net` functions. A handler function is a Mongoose event
-  // handler, that receives connection, event, and event data. Events are:
-  // `Net.EV_POLL`, `Net.EV_ACCEPT`, `Net.EV_CONNECT`, `Net.EV_RECV`,
-  // `Net.EV_SEND`, `Net.EV_CLOSE`, `Net.EV_TIMER`. Example:
-  // ```javascript
-  // Net.bind(':1234', function(conn, ev, ev_data) {
-  //   print(ev);
-  // }, null);
-  // ```
-  bind: ffi('void *mgos_bind(char *, void (*)(void *, int, void *, userdata), userdata)'),
+  _rb: ffi('void *mgos_get_recv_mbuf(void *)'),
+  _mptr: ffi('void *mgos_get_mbuf_ptr(void *)'),
+  _glen: ffi('int mgos_get_mbuf_len(void *)'),
+  _mrem: ffi('void mbuf_remove(void *, int)'),
 
-  // ## **`Net.connect(addr, handler, userdata)`**
-  // Connect to a remote host.
-  // Return value: an opaque connection pointer which should be given as a first argument to
-  // some `Net` functions.
-  //
+  _bind: ffi('void *mgos_bind(char *, void (*)(void *, int, void *, userdata), userdata)'),
+  _c: ffi('void *mgos_connect(char *, void (*)(void *, int, void *, userdata), userdata)'),
+  _cs: ffi('void *mgos_connect_ssl(char *, void (*)(void *, int, void *, userdata), userdata, char *, char *, char *)'),
+  _send: ffi('void mg_send(void *, void *, int)'),
+  _atos: ffi('void mg_conn_addr_to_str(void *, char *, int, int)'),
+
+  // Return string contained in connection's recv_mbuf
+  _rbuf: function(conn) {
+    let rb = this._rb(conn);
+    return fstr(this._mptr(rb), this._glen(rb));
+  },
+
+  // **`Net.ctos(conn, local, ip, port)`**
+  // Convert address of a connection `conn` to string. Set `local` to
+  // `true` to stringify local address, otherwise `false` to stringify remote.
+  // Set `ip` to `true` to stringify IP, `port` to stringify port. Example:
+  // ```javascript
+  // print('Connection from:', Net.ctos(conn, false, true, true));
+  // ```
+  ctos: function(conn, local, ip, port) {
+    let buf = '                              ';
+    let flags = (local ? 0 : 4) | (ip ? 1 : 0) | (port ? 2 : 0);
+    this._atos(conn, buf, buf.length, flags);
+    return buf;
+  },
+
+  // **`Net.discard(conn, len)`**
+  // Remove initial `len` bytes of data from the connection's `conn`
+  // receive buffer in order to discard that data and reclaim RAM to the system.
+  discard: function(conn, len) {
+    this._mrem(this._rb(conn), len);
+  },
+
+  // Event handler. Expects an object with connect/data/close/event user funcs.
+  _evh: function(conn, ev, edata, obj) {
+    if (ev === 0) return;
+
+    if (ev === 1 || ev === 2) {
+      if (obj.onconnect) obj.onconnect(conn, edata, obj);
+    } else if (ev === 3) {
+      if (obj.ondata) obj.ondata(conn, Net._rbuf(conn), obj);
+    } else if (ev === 5) {
+      if (obj.onclose) obj.onclose(conn, obj);
+      ffi_cb_free(Net._evh, obj);
+    } else if (ev >= 6) {
+      if (obj.onevent) obj.onevent(conn, Net._rbuf(conn), ev, edata, obj);
+    }
+  },
+
+  // ## **`Net.serve(options)`**
+  // Start TCP or UDP server. `options` is an object:
+  // ```javascript
+  // {
+  //    // Required. Port to listen on, 'tcp://PORT' or `udp://PORT`.
+  //    addr: 'tcp://1234',
+  //    // Optional. Called when connection is established.
+  //    onconnect: function(conn) {}, 
+  //    // Optional. Called when new data is arrived.
+  //    ondata: function(conn, data) {},
+  //    // Optional. Called when protocol-specific event is triggered.
+  //    onevent: function(conn, data, ev, edata) {},
+  //    // Optional. Called when the connection is about to close.
+  //    onclose: function(conn) {},
+  //    // Optional. Called when on connection error.
+  //    onerror: function(conn) {},
+  // }
+  // ```
+  // Example - a UDP echo server. Change `udp://` to `tcp://` to turn this
+  // example into the TCP echo server:
+  // ```javascript
+  // Net.serve({
+  //   addr: 'udp://1234',
+  //   data: function(conn, data) {
+  //     print('Received from:', Net.ctos(conn, false, true, true), ':', data);
+  //     Net.send(conn, data);            // Echo received data back
+  //     Net.discard(conn, data.length);  // Discard received data
+  //   },
+  // });
+  // ```
+  serve: function(obj) {
+    return this._bind(obj.addr, this._evh, obj);
+  },
+
+  // ## **`Net.connect(options)`**
+  // Connect to a remote host. `options` is the same as for the `Net.serve`.
   // The addr format is `[PROTO://]HOST:PORT`. `PROTO` could be `tcp` or
   // `udp`. `HOST` could be an IP address or a host name. If `HOST` is a name,
   // it will be resolved asynchronously.
   //
   // Examples of valid addresses: `google.com:80`, `udp://1.2.3.4:53`,
   // `10.0.0.1:443`, `[::1]:80`.
-  //
-  // Handler is a callback function which takes the following arguments:
-  // `(conn, event, event_data, userdata)`.
-  // conn is an opaque pointer which should be used as a first argument to
-  // `Net.send()`, `Net._send()`, `Net.close()`.
-  // event is one of the following:
-  // - `Net.EV_POLL`
-  // - `Net.EV_ACCEPT`
-  // - `Net.EV_CONNECT`
-  // - `Net.EV_RECV`
-  // - `Net.EV_SEND`
-  // - `Net.EV_CLOSE`
-  // - `Net.EV_TIMER`
-  // event_data is additional data; handling of it is currently not possible
-  // from mJS.
-  // userdata is the value given as a third argument to `Net.connect()`.
-  connect: ffi('void *mgos_connect(char *, void (*)(void *, int, void *, userdata), userdata)'),
-
-  // ## **`Net.connect_ssl(addr, handler, userdata, cert, key, ca_cert)`**
-  // The same as `Net.connect`, but establishes SSL connection
-  // Additional parameters are:
-  // - `cert` is a client certificate file name or "" if not required
-  // - `key` is a client key file name or "" if not required
-  // - `ca_cert` is a CA certificate or "" if peer verification is not required.
-  // The certificate files must be in PEM format.
-  connect_ssl: ffi('void *mgos_connect_ssl(char *, void (*)(void *, int, void *, userdata), userdata, char *, char *, char *)'),
+  connect: function(obj) {
+    if (obj.ssl) {
+      return this._cs(obj.addr, this._evh, obj, obj.cert || '', obj.key || '', obj.ca_cert || 'ca.pem');
+    } else {
+      return this._c(obj.addr, this._evh, obj);
+    }
+  },
 
   // ## **`Net.close(conn)`**
   // Send all pending data to the remote peer,
@@ -59,20 +109,12 @@ let Net = {
   // Return value: none.
   close: ffi('void mgos_disconnect(void *)'),
 
-  _send: ffi('void mg_send(void *, void *, int)'),
-
   // ## **`Net.send(conn, data)`**
   // Send data to the remote peer. `data` is an mJS string.
   // Return value: none.
-  send: function(c, msg) { return Net._send(c, msg, msg.length); },
-
-  EV_POLL: 0,
-  EV_ACCEPT: 1,
-  EV_CONNECT: 2,
-  EV_RECV: 3,
-  EV_SEND: 4,
-  EV_CLOSE: 5,
-  EV_TIMER: 6,
+  send: function(c, msg) {
+    return Net._send(c, msg, msg.length);
+  },
 
   // ## **`Net.setStatusEventHandler(handler, data)`**
   // Set network status handler. A handler is a function that receives

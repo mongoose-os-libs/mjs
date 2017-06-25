@@ -35,18 +35,18 @@ let URL = {
 };
 
 let HTTP = {
+  _getm: ffi('void *mgos_get_msg_ptr(void *)'),
+  _getb: ffi('void *mgos_get_body_ptr(void *)'),
+  _mgp: ffi('void *mgos_get_mgstr_ptr(void *)'),
+  _mgl: ffi('int mgos_get_mgstr_len(void *)'),
+
   _c: ffi('void *mgos_connect_http(char *, void (*)(void *, int, void *, userdata), userdata)'),
   _cs: ffi('void *mgos_connect_http_ssl(char *, void (*)(void *, int, void *, userdata), userdata, char *, char *, char *)'),
-  _pk: ffi('void *mjs_mem_get_ptr(void *, int)'),
-  _p: ffi('void *mjs_mem_to_ptr(int)'),
-  _getu: ffi('double mjs_mem_get_uint(void *, int, int)'),
-  _gets: ffi('double mjs_mem_get_int(void *, int, int)'),
+  _sp: ffi('void mg_set_protocol_http_websocket(void *)'),
 
-  // Get `struct http_message *` foreign ptr and offset, return JS string.
-  _hmf: function(ptr, off) {
-    let p = this._p(this._getu(this._pk(ptr, off), 4, 0));
-    let len = this._getu(this._pk(ptr, off + 4), 4, 0);
-    return len ? fstr(p, len) : '';
+  _mstr: function(hmptr, func) {
+    let mgstr = func(hmptr);
+    return fstr(this._mgp(mgstr), this._mgl(mgstr));
   },
 
   // ## **`HTTP.query(options);`**
@@ -71,39 +71,40 @@ let HTTP = {
   //   error: function(err) { print(err); },  // Optional
   // });
   // ```
-  query: function(obj) {
-    obj.u = URL.parse(obj.url || '');
-    let f = function(conn, ev, evd, ud) {
-      if (ev === Net.EV_POLL) return;
-      if (ev === Net.EV_CONNECT) {
-        let body = ud.data ? JSON.stringify(ud.data) : '';
+  query: function(opts) {
+    let url = URL.parse(opts.url || '');
+    return Net.connect({
+      addr: url.addr,
+      ssl: url.ssl,
+      u: url,
+      opts: opts,
+      onconnect: function(conn, edata, ud) {
+        let opts = ud.opts;
+        let body = opts.data ? JSON.stringify(opts.data) : '';
         let meth = body ? 'POST' : 'GET';
         let host = 'Host: ' + ud.u.addr + '\r\n';
         let cl = 'Content-Length: ' + JSON.stringify(body.length) + '\r\n';
-        let hdrs = ud.headers || {};
+        let hdrs = opts.headers || {};
         for (let k in hdrs) {
           cl += k + ': ' + hdrs[k] + '\r\n';
         }
         let req = meth + ' ' + ud.u.uri + ' HTTP/1.0\r\n' + host + cl + '\r\n';
         Net.send(conn, req);
         Net.send(conn, body);
-      }
-      if (ev === 101) {
-        if (typeof(ud.success) === 'function') {
-          ud.success(HTTP._hmf(evd, 8), HTTP._hmf(evd, 0));
+        HTTP._sp(conn);
+      },
+      onevent: function(conn, buf, ev, edata, ud) {
+        if (ev === 101 && ud.opts.success) {
+          let body = HTTP._mstr(edata, HTTP._getb);
+          let full = HTTP._mstr(edata, HTTP._getm);
+          ud.opts.success(body, full);
+          ud.ok = true;
         }
-        ud.ok = true;
-      }
-      if (ev === Net.EV_CLOSE) {
-        if (!ud.ok && ud.error) ud.error('', 'Request failed');
-        ffi_cb_free(ud.f, ud);
-      }
-    };
-    obj.f = f;
-    if (obj.u.ssl) {
-      this._cs(obj.u.addr, f, obj, obj.cert || '', obj.key || '', obj.ca_cert || 'ca.pem');
-    } else {
-      this._c(obj.u.addr, f, obj);
-    }
+      },
+      onclose: function(conn, ud) {
+        let opts = ud.opts;
+        if (!ud.ok && opts.error) opts.error('', 'Request failed', opts);
+      },
+    });
   },
 };
