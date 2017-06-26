@@ -3,6 +3,7 @@ let Net = {
   _mptr: ffi('void *mgos_get_mbuf_ptr(void *)'),
   _glen: ffi('int mgos_get_mbuf_len(void *)'),
   _mrem: ffi('void mbuf_remove(void *, int)'),
+  _isin: ffi('bool mgos_is_inbound(void *)'),
 
   _bind: ffi('void *mgos_bind(char *, void (*)(void *, int, void *, userdata), userdata)'),
   _c: ffi('void *mgos_connect(char *, void (*)(void *, int, void *, userdata), userdata)'),
@@ -47,7 +48,8 @@ let Net = {
       if (obj.ondata) obj.ondata(conn, Net._rbuf(conn), obj);
     } else if (ev === 5) {
       if (obj.onclose) obj.onclose(conn, obj);
-      ffi_cb_free(Net._evh, obj);
+      let inb = Net._isin(conn);  // Is this an inbound connection ?
+      if (!inb) ffi_cb_free(Net._evh, obj);
     } else if (ev >= 6) {
       if (obj.onevent) obj.onevent(conn, Net._rbuf(conn), ev, edata, obj);
     }
@@ -76,7 +78,7 @@ let Net = {
   // ```javascript
   // Net.serve({
   //   addr: 'udp://1234',
-  //   data: function(conn, data) {
+  //   ondata: function(conn, data) {
   //     print('Received from:', Net.ctos(conn, false, true, true), ':', data);
   //     Net.send(conn, data);            // Echo received data back
   //     Net.discard(conn, data.length);  // Discard received data
