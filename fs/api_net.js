@@ -9,7 +9,7 @@ let Net = {
   _c: ffi('void *mgos_connect(char *, void (*)(void *, int, void *, userdata), userdata)'),
   _cs: ffi('void *mgos_connect_ssl(char *, void (*)(void *, int, void *, userdata), userdata, char *, char *, char *)'),
   _send: ffi('void mg_send(void *, void *, int)'),
-  _atos: ffi('void mg_conn_addr_to_str(void *, char *, int, int)'),
+  _ctos: ffi('int mg_conn_addr_to_str(void *, char *, int, int)'),
 
   // Return string contained in connection's recv_mbuf
   _rbuf: function(conn) {
@@ -27,8 +27,8 @@ let Net = {
   ctos: function(conn, local, ip, port) {
     let buf = '                              ';
     let flags = (local ? 0 : 4) | (ip ? 1 : 0) | (port ? 2 : 0);
-    this._atos(conn, buf, buf.length, flags);
-    return buf;
+    let n = this._ctos(conn, buf, buf.length, flags);
+    return buf.slice(0, n);
   },
 
   // **`Net.discard(conn, len)`**
