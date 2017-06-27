@@ -13,8 +13,8 @@ let Sys = {
   // Return free available RAM in bytes.
   free_ram: ffi('int mgos_get_free_heap_size()'),
 
-  // ## **`Sys.reboot()`**
-  // Reboot the system. Return value: none.
+  // ## **`Sys.reboot(us)`**
+  // Reboot the system after `us` microseconds. Return value: none.
   reboot: ffi('void mgos_system_restart(int)'),
 
   // ## **`Sys.uptime()`**
