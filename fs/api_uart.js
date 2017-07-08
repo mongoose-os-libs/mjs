@@ -3,7 +3,7 @@
 let UART = {
   _free: ffi('void free(void *)'),
   _cdef: ffi('void *mgos_uart_config_get_default(int)'),
-  _cbr: ffi('void mgos_uart_config_set_baud_rate(void *, int)'),
+  _cbp: ffi('void mgos_uart_config_set_basic_params(void *, int, int, int, int)'),
   _crx: ffi('void mgos_uart_config_set_rx_params(void *, int, int, int)'),
   _ctx: ffi('void mgos_uart_config_set_tx_params(void *, int, int)'),
   _cfg: ffi('int mgos_uart_configure(int, void *)'),
@@ -15,6 +15,9 @@ let UART = {
   // object with the following optional fields:
   //
   // - `baudRate`: baud rate, integer, default: 115200;
+  // - `numDataBits`: Number of data bits, default: 8;
+  // - `parity`: Parity: 0 - none, 1 - even, 2 - odd; default: none;
+  // - `numStopBits`: Number of stop bits: 1 - 1 bit, 2 - 2 bits, 3 - 1.5; default: 1;
   // - `rxBufSize`: size of the Rx buffer, integer, default: 256;
   // - `rxFlowControl`: whether Rx flow control (RTS pin) is enabled, boolean,
   //    default: false;
@@ -78,12 +81,13 @@ let UART = {
   //      },
   //    }
   // ```
-  //
-  // TODO: implement esp8266-specific settings
   setConfig: function(uartNo, param) {
     let cfg = this._cdef(uartNo);
 
-    this._cbr(cfg, param.baudRate || 115200);
+    this._cbp(cfg, param.baudRate || 115200,
+                   param.numDataBits || 8,
+                   param.parity || 0,
+                   param.numStopBits || 1);
 
     this._crx(
       cfg,
