@@ -1,0 +1,5 @@
+sources:
+  - esp8266/src
+
+filesystem:
+  - esp8266/fs
