@@ -72,7 +72,7 @@ let NeoPixel = {
   show: function() {
     GPIO.write(this.pin, 0);
     Sys.usleep(60);
-    BitBang.write(this.pin, BitBang.DELAY_100NSEC, 3, 8, 7, 6, this.data, this.len);
+    BitBang.write(this.pin, BitBang.DELAY_100NSEC, 3, 8, 8, 6, this.data, this.len);
     GPIO.write(this.pin, 0);
     Sys.usleep(60);
     GPIO.write(this.pin, 1);
