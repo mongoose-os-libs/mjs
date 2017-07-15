@@ -6,4 +6,9 @@ let ESP32 = {
   // ## **`ESP32.hall()`**
   // Read built-in Hall sensor. Return value: integer.
   hall:  ffi('int hall_sens_read(void)'),
+
+  // ## **`Sys.deepSleep(microseconds)`**
+  // Deep Sleep given number of microseconds.
+  // Return value: does not return.
+  deepSleep:  ffi('void mgos_esp_deep_sleep_d(double)'),
 };
