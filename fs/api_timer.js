@@ -39,6 +39,6 @@ let Timer = {
       if (res === -1) return 'invalid time';
       if (res === 0) s += '     ';
     }
-    return s;
+    return s.slice(0, res);
   },
 };
