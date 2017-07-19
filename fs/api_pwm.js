@@ -8,12 +8,12 @@ let PWM = {
   //
   // Example:
   // ```javascript
-  // PWM.set(pin, 20000, 50);
+  // PWM.set(pin, 50, 2.73);
   // ```
   // Note:
   // on ESP32 we use 8 channels and 4 timers.
   // Each `PWM.set()` call with new pin number assigns a new channel.
   // If we already have a timer running at the specified frequency,
   // we use it instead of assigning a new one.
-  set: ffi('bool mgos_pwm_set(int, int, int)'),
+  set: ffi('bool mgos_pwm_set_double(int, int, double)'),
 };
