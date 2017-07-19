@@ -1,10 +1,10 @@
 #include "common/platform.h"
-#include "fw/src/mgos_app.h"
-#include "fw/src/mgos_hal.h"
-#include "fw/src/mgos_hooks.h"
-#include "fw/src/mgos_mongoose.h"
-#include "fw/src/mgos_sys_config.h"
-#include "fw/src/mgos_dlsym.h"
+#include "mgos_app.h"
+#include "mgos_hal.h"
+#include "mgos_hooks.h"
+#include "mgos_mongoose.h"
+#include "mgos_sys_config.h"
+#include "mgos_dlsym.h"
 #include "mos_mjs.h"
 
 struct mjs *mjs = NULL;
