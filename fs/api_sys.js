@@ -1,4 +1,16 @@
 let Sys = {
+  // Helper function to allocate string of at least given length. Note that
+  // the resulting string is usually bigger than this, and it is always
+  // longer than 5 bytes; that's to guarantee that the string data is stored in
+  // a common buffer and not inlined into mjs_val_t, thus the buffer can be
+  // used as an "output" buffer: a string can be passed to some function which
+  // will alter the contents, and these changes will be visible to the caller.
+  _sbuf: function(len) {
+    let chunk = '          ', buf = chunk;
+    while (buf.length < len) buf += chunk;
+    return buf;
+  },
+
   // ## **`Sys.calloc(nmemb, size)`**
   // Allocate a memory region.
   // Note: currently memory allocated this way must be explicitly released with `free()`.
