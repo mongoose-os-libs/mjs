@@ -12,6 +12,8 @@ extern "C" {
 
 bool mgos_mjs_init(void);
 
+struct mjs *mgos_mjs_get_global(void);
+
 #ifdef __cplusplus
 }
 #endif /* __cplusplus */

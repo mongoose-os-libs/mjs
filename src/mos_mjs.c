@@ -74,3 +74,7 @@ bool mgos_mjs_init(void) {
       ("mJS memory stat: before init: %d after init: %d", mem1, mem2));
   return true;
 }
+
+struct mjs *mgos_mjs_get_global(void) {
+  return mjs;
+}
