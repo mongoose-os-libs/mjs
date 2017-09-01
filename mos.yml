@@ -3,7 +3,7 @@ description: JavaScript engine
 type: lib
 version: 1.0
 
-platforms: [ esp32, esp8266 ]
+platforms: [ cc3220, esp32, esp8266 ]
 
 sources:
   - src
