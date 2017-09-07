@@ -3,7 +3,7 @@
  * All rights reserved
  */
 
-#include <esp_deep_sleep.h>
+#include <esp_sleep.h>
 
 void mgos_esp_deep_sleep_d(double time_in_us) {
   esp_deep_sleep(time_in_us);
