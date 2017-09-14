@@ -80,7 +80,8 @@ let HTTP = {
       opts: opts,
       onconnect: function(conn, edata, ud) {
         let opts = ud.opts;
-        let body = opts.data ? JSON.stringify(opts.data) : '';
+        let body = opts.data || '';
+        if (typeof(body) !== 'string') body = JSON.stringify(body);
         let meth = body ? 'POST' : 'GET';
         let host = 'Host: ' + ud.u.addr + '\r\n';
         let cl = 'Content-Length: ' + JSON.stringify(body.length) + '\r\n';
