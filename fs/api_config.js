@@ -1,5 +1,6 @@
 let Cfg = {
   _get: ffi('void *get_cfg()'),
+  _set: ffi('bool mgos_config_apply(char *, bool)'),
   _desc: ffi('void *sys_config_schema()'),
   _find: ffi('void *mgos_conf_find_schema_entry(char *, void *)'),
   _type: ffi('int mgos_conf_value_type(void *)'),
@@ -12,7 +13,7 @@ let Cfg = {
   _STR: 3,
   _OBJ: 4,
 
-  // ## **`Cfg.get(path)`** 
+  // ## **`Cfg.get(path)`**
   // Get the config value by the configuration variable. Currently, only
   // simple types are returned: strings, ints, booleans, doubles. Objects
   // are not yet supported.
@@ -45,5 +46,18 @@ let Cfg = {
       return undefined;
     }
   },
-};
 
+  // ## **`Cfg.set(obj, opt_save)`**
+  // Set the configuration. `obj` must be a subset of the whole configuation
+  // tree. `save` is boolean flag that indicating whether the change should
+  // be saved - it could be omitted, in which case it defaults to `true`.
+  // Examples:
+  // ```javascript
+  // load('api_config.js');
+  // Cfg.set({wifi: {ap: {enable: false}}});  // Disable WiFi AP mode
+  // Cfg.set({debug: {level: 3}});            // Set debug level to 3
+  // ```
+  set: function(obj, save) {
+    return this._set(JSON.stringify(obj), save === undefined ? true : save);
+  },
+};
