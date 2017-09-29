@@ -8,6 +8,8 @@ platforms: [ cc3220, esp32, esp8266 ]
 sources:
   - src
   - ${mos.modules.mjs.path}/mjs.c
+includes:
+  - include
 filesystem:
   - fs
   - ${mos.modules.mjs.path}/mjs/lib/api_*.js
