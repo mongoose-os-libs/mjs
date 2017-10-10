@@ -25,5 +25,6 @@ modules:
 tags:
   - js      # Supports JavaScript
   - c
+  - core
 
 manifest_version: 2017-09-29
