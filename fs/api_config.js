@@ -1,7 +1,7 @@
 let Cfg = {
-  _get: ffi('void *get_cfg()'),
+  _get: ffi('void *mgos_mjs_get_config()'),
   _set: ffi('bool mgos_config_apply(char *, bool)'),
-  _desc: ffi('void *sys_config_schema()'),
+  _desc: ffi('void *mgos_config_schema()'),
   _find: ffi('void *mgos_conf_find_schema_entry(char *, void *)'),
   _type: ffi('int mgos_conf_value_type(void *)'),
   _str: ffi('char *mgos_conf_value_string_nonnull(void *, void *)'),

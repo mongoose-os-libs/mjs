@@ -65,13 +65,12 @@ void mgos_net_add_event_handler_js(void (*cb)(enum mgos_net_event ev,
 
 bool mgos_mjs_init(void) {
   /* Initialize JavaScript engine */
-  struct sys_config *cfg = get_cfg();
   int mem1, mem2;
   mem1 = mgos_get_free_heap_size();
   mjs = mjs_create();
   mem2 = mgos_get_free_heap_size();
   mjs_set_ffi_resolver(mjs, mgos_dlsym);
-  mjs_set_generate_jsc(mjs, cfg->mjs.generate_jsc);
+  mjs_set_generate_jsc(mjs, mgos_sys_config_get_mjs_generate_jsc());
 
 #ifdef MGOS_HAVE_WIFI
   {
@@ -92,6 +91,10 @@ bool mgos_mjs_init(void) {
   LOG(LL_DEBUG,
       ("mJS memory stat: before init: %d after init: %d", mem1, mem2));
   return true;
+}
+
+struct mgos_config *mgos_mjs_get_config(void) {
+  return &mgos_sys_config;
 }
 
 struct mjs *mgos_mjs_get_global(void) {
