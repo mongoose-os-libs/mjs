@@ -1,5 +1,11 @@
-// Copyright (c) Cesanta Software Limited
-// All rights reserved
+/*
+ * Copyright 2015-2017 Cesanta
+ * All rights reserved
+ */
+
+/*
+ * mJS wrapper API.
+ */
 
 #ifndef MOS_MJS_H_
 #define MOS_MJS_H_
@@ -12,6 +18,7 @@ extern "C" {
 
 bool mgos_mjs_init(void);
 
+/* Return global mJS instance. */
 struct mjs *mgos_mjs_get_global(void);
 
 #ifdef __cplusplus
