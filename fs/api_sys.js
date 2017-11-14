@@ -1,4 +1,5 @@
 let Sys = {
+  // ## **`Sys._sbuf(len)`**
   // Helper function to allocate string of at least given length. Note that
   // the resulting string is usually bigger than this, and it is always
   // longer than 5 bytes; that's to guarantee that the string data is stored in
