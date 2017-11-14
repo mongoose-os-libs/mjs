@@ -1,7 +1,12 @@
 let Log = {
   // ## **`Log.print(level, msg)`**
   // Print message to stderr if provided
-  // level is >= `Cfg.get('debug.level')`
+  // level is >= `Cfg.get('debug.level')`. Possible levels are:
+  // - `Log.ERROR` (0)
+  // - `Log.WARN` (1)
+  // - `Log.INFO` (2)
+  // - `Log.DEBUG` (3)
+  // - `Log.VERBOSE_DEBUG` (4)
   print: function(level, msg) {
     let mjs = getMJS();
     // Frame number: we're starting from the third frame, ignoring the first
