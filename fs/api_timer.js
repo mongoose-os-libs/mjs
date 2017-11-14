@@ -3,9 +3,10 @@ load('api_math.js');
 let Timer = {
   _f: ffi('int mgos_strftime(char *, int, char *, int)'),
 
-  // ## **`Timer.set(milliseconds, repeat, handler)`**
+  // ## **`Timer.set(milliseconds, flags, handler, userdata)`**
   // Setup timer with `milliseconds` timeout and `handler` as a callback.
-  // If `repeat` is set to true, the call will be repeated indefinitely,
+  // `flags` can be either 0 or `Timer.REPEAT`. In the latter case, the call
+  // will be repeated indefinitely (but can be cancelled with `Timer.del()`),
   // otherwise it's a one-off.
   //
   // Return value: numeric timer ID.
@@ -18,7 +19,9 @@ let Timer = {
   //   print(value ? 'Tick' : 'Tock');
   // }, null);
   // ```
-  set: ffi('int mgos_set_timer(int,bool,void(*)(userdata),userdata)'),
+  set: ffi('int mgos_set_timer(int,int,void(*)(userdata),userdata)'),
+
+  REPEAT: 1,
 
   // ## **`Timer.now()`**
   // Return current time as double value, UNIX epoch (seconds since 1970).
@@ -30,7 +33,14 @@ let Timer = {
 
   // ## **`Timer.fmt(fmt, time)`**
   // Formats the time 'time' according to the strftime-like format
-  // specification 'fmt'
+  // specification 'fmt'. The strftime reference can be found e.g.
+  // [here](http://www.cplusplus.com/reference/ctime/strftime/).
+  // Example:
+  // ```javascript
+  // let now = Timer.now();
+  // let s = Timer.fmt("Now it's %I:%M%p.", now);
+  // print(s); // Example output: "Now it's 12:01AM."
+  // ```
   fmt: function(fmt, time) {
     if (!fmt) return 'invalid format';
     let res = 0, t = Math.round(time || Timer.now()),  s = '     ';
