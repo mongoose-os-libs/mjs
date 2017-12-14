@@ -8,7 +8,7 @@
 #include "mgos_app.h"
 #include "mgos_dlsym.h"
 #include "mgos_hal.h"
-#include "mgos_hooks.h"
+#include "mgos_event.h"
 #include "mgos_mongoose.h"
 #include "mgos_net.h"
 #include "mgos_sys_config.h"
@@ -23,8 +23,7 @@ struct mjs *mjs = NULL;
 /*
  * Runs when all initialization (all libs + app) is done
  */
-static void s_init_done_hook(enum mgos_hook_type type,
-                             const struct mgos_hook_arg *arg, void *userdata) {
+static void s_init_done_handler(int ev, void *ev_data, void *userdata) {
   int mem1, mem2;
 
   mem1 = mgos_get_free_heap_size();
@@ -36,8 +35,8 @@ static void s_init_done_hook(enum mgos_hook_type type,
   LOG(LL_DEBUG,
       ("mJS memory stat: before init.js: %d after init.js: %d", mem1, mem2));
 
-  (void) type;
-  (void) arg;
+  (void) ev;
+  (void) ev_data;
   (void) userdata;
 }
 
@@ -84,9 +83,9 @@ bool mgos_mjs_init(void) {
   /*
    * We also need to run init.js, but we can't do that here because init.js
    * might depend on some other libs which weren't initialized yet. Thus we use
-   * the INIT_DONE hook.
+   * the INIT_DONE event.
    */
-  mgos_hook_register(MGOS_HOOK_INIT_DONE, s_init_done_hook, NULL);
+  mgos_event_add_handler(MGOS_EVENT_INIT_DONE, s_init_done_handler, NULL);
 
   LOG(LL_DEBUG,
       ("mJS memory stat: before init: %d after init: %d", mem1, mem2));
