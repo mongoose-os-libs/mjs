@@ -46,7 +46,7 @@ let HTTP = {
 
   _mstr: function(hmptr, func) {
     let mgstr = func(hmptr);
-    return fstr(this._mgp(mgstr), this._mgl(mgstr));
+    return mkstr(this._mgp(mgstr), this._mgl(mgstr));
   },
 
   // ## **`HTTP.query(options);`**

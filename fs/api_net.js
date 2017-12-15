@@ -14,7 +14,7 @@ let Net = {
   // Return string contained in connection's recv_mbuf
   _rbuf: function(conn) {
     let rb = this._rb(conn);
-    return fstr(this._mptr(rb), this._glen(rb));
+    return mkstr(this._mptr(rb), this._glen(rb));
   },
 
   // **`Net.ctos(conn, local, ip, port)`**
