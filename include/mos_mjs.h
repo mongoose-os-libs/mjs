@@ -16,8 +16,6 @@ extern "C" {
 
 #include "mjs.h"
 
-bool mgos_mjs_init(void);
-
 /* Return global mJS instance. */
 struct mjs *mgos_mjs_get_global(void);
 
