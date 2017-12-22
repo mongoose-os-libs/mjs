@@ -13,6 +13,20 @@ let Event = {
   // ```
   addHandler: ffi('bool mgos_event_add_handler(int, void(*)(int, void *, userdata), userdata)'),
 
+  // ## **`Event.addGroupHandler(evgrp, callback, userdata)`**
+  // Like `Event.addHandler()`, but subscribes on all events in the given
+  // event group `evgrp`. Event group includes all events from `evgrp & ~0xff`
+  // to `evgrp | 0xff`.
+  //
+  // Example:
+  // ```javascript
+  //
+  // Event.addGroupHandler(Event.SYS, function(ev, evdata, ud) {
+  //   print("Sys event:", ev);
+  // }, null);
+  // ```
+  addGroupHandler: ffi('bool mgos_event_add_group_handler(int, void(*)(int, void *, userdata), userdata)'),
+
   // ## **`Event.regBase(base_event_number, name)`**
   // Register a base event number in order to prevent event number conflicts.
   // Use `Event.baseNumber(id)` to get `base_event_number`; `name` is an
@@ -62,7 +76,7 @@ let Event = {
   _gdl: ffi('int mgos_debug_event_get_len(void *)'),
 };
 
-Event._sysBase = Event.baseNumber("MOS");
+Event.SYS = Event.baseNumber("MOS");
 
 // NOTE: INIT_DONE is unavailable here because init.js is executed in
 // INIT_DONE hook
@@ -71,16 +85,16 @@ Event._sysBase = Event.baseNumber("MOS");
 // System event which is triggered every time something is printed to the
 // log.  In the callback, use `Event.evdataLogStr(evdata)` to get string
 // which was printed.
-Event.LOG = Event._sysBase + 1;
+Event.LOG = Event.SYS + 1;
 
 // ## **`Event.REBOOT`**
 // System event which is triggered right before going to reboot. `evdata`
 // is irrelevant for this event.
-Event.REBOOT = Event._sysBase + 2;
+Event.REBOOT = Event.SYS + 2;
 
 // ## **`Event.OTA_STATUS`**
 // System event which is triggered when OTA status changes.
 //
 // In the callback, use `OTA.evdataOtaStatusMsg(evdata)` from `api_ota.js` to
 // get the OTA status message.
-Event.OTA_STATUS = Event._sysBase + 3;
+Event.OTA_STATUS = Event.SYS + 3;
