@@ -45,23 +45,6 @@ struct cb_info {
   void *arg;
 };
 
-static void mgos_net_add_event_handler_js_cb(
-    enum mgos_net_event ev, const struct mgos_net_event_data *ev_data,
-    void *arg) {
-  struct cb_info *cbi = (struct cb_info *) arg;
-  cbi->cb(ev, cbi->arg);
-  (void) ev_data;
-}
-
-void mgos_net_add_event_handler_js(void (*cb)(enum mgos_net_event ev,
-                                              void *arg),
-                                   void *arg) {
-  struct cb_info *cbi = (struct cb_info *) calloc(1, sizeof(*cbi));
-  cbi->cb = cb;
-  cbi->arg = arg;
-  mgos_net_add_event_handler(mgos_net_add_event_handler_js_cb, cbi);
-}
-
 bool mgos_mjs_init(void) {
   /* Initialize JavaScript engine */
   int mem1, mem2;

@@ -1,3 +1,5 @@
+load('api_events.js');
+
 let Net = {
   _rb: ffi('void *mgos_get_recv_mbuf(void *)'),
   _mptr: ffi('void *mgos_get_mbuf_ptr(void *)'),
@@ -118,13 +120,17 @@ let Net = {
     return Net._send(c, msg, msg.length);
   },
 
-  // ## **`Net.setStatusEventHandler(handler, data)`**
-  // Set network status handler. A handler is a function that receives
-  // events: `Net.STATUS_DISCONNECTED`, `Net.STATUS_CONNECTING`,
-  // `Net.STATUS_CONNECTED`, `Net.STATUS_GOT_IP`.
-  setStatusEventHandler: ffi('void mgos_net_add_event_handler_js(void (*)(int, userdata), userdata)'),
-  STATUS_DISCONNECTED: 0,
-  STATUS_CONNECTING: 1,
-  STATUS_CONNECTED: 2,
-  STATUS_GOT_IP: 3,
+  // ## **`Net.EVENT_GRP`**
+  // Net events group, to be used with `Event.addGroupHandler()`. Possible
+  // events are:
+  // - `Net.STATUS_DISCONNECTED`
+  // - `Net.STATUS_CONNECTING`
+  // - `Net.STATUS_CONNECTED`
+  // - `Net.STATUS_GOT_IP`
+  EVENT_GRP: Event.baseNumber("NET"),
 };
+
+Net.STATUS_DISCONNECTED = Net.EVENT_GRP + 0;
+Net.STATUS_CONNECTING   = Net.EVENT_GRP + 1;
+Net.STATUS_CONNECTED    = Net.EVENT_GRP + 2;
+Net.STATUS_GOT_IP       = Net.EVENT_GRP + 3;
