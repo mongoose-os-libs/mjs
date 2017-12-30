@@ -11,7 +11,8 @@ let Event = {
   //   print("Going to reboot!");
   // }, null);
   // ```
-  addHandler: ffi('bool mgos_event_add_handler(int, void(*)(int, void *, userdata), userdata)'),
+  addHandler: ffi(
+      'bool mgos_event_add_handler(int, void(*)(int, void *, userdata), userdata)'),
 
   // ## **`Event.addGroupHandler(evgrp, callback, userdata)`**
   // Like `Event.addHandler()`, but subscribes on all events in the given
@@ -25,7 +26,8 @@ let Event = {
   //   print("Sys event:", ev);
   // }, null);
   // ```
-  addGroupHandler: ffi('bool mgos_event_add_group_handler(int, void(*)(int, void *, userdata), userdata)'),
+  addGroupHandler: ffi(
+      'bool mgos_event_add_group_handler(int, void(*)(int, void *, userdata), userdata)'),
 
   // ## **`Event.regBase(base_event_number, name)`**
   // Register a base event number in order to prevent event number conflicts.
@@ -52,7 +54,7 @@ let Event = {
   //
   // A library should call `Event.regBase()` in order to claim
   // it and prevent event number conflicts. (see example there)
-  baseNumber: function (id) {
+  baseNumber: function(id) {
     if (id.length !== 3) {
       die("Base event id should have exactly 3 chars");
       return -1;
