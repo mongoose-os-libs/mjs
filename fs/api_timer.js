@@ -14,7 +14,7 @@ let Timer = {
   // Example:
   // ```javascript
   // // Call every second
-  // Timer.set(1000, true, function() {
+  // Timer.set(1000, Timer.REPEAT, function() {
   //   let value = GPIO.toggle(2);
   //   print(value ? 'Tick' : 'Tock');
   // }, null);
@@ -43,7 +43,7 @@ let Timer = {
   // ```
   fmt: function(fmt, time) {
     if (!fmt) return 'invalid format';
-    let res = 0, t = Math.round(time || Timer.now()),  s = '     ';
+    let res = 0, t = Math.round(time || Timer.now()), s = '     ';
     while (res === 0) {
       res = this._f(s, s.length, fmt, t);
       if (res === -1) return 'invalid time';
