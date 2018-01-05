@@ -7,12 +7,12 @@ platforms: [ cc3220, esp32, esp8266 ]
 
 sources:
   - src
-  - ${mos.modules.mjs.path}/mjs.c
+  - ${mos.modules.mjs_module.path}/mjs.c
 includes:
   - include
 filesystem:
   - fs
-  - ${mos.modules.mjs.path}/mjs/lib/api_*.js
+  - ${mos.modules.mjs_module.path}/mjs/lib/api_*.js
   - ${mos.modules.mongoose_os.path}/fw/mjs_api/api_*.js
   - ${mos.modules.mongoose_os.path}/fw/platforms/${arch}/mjs_api/api_*.js
   - "@all_libs/mjs_fs"
@@ -21,6 +21,7 @@ config_schema:
   - ["mjs.generate_jsc", "b", true, {title: "Generate .jsc file when executing any .js file"}]
 modules:
   - origin: https://github.com/cesanta/mjs
+    name: mjs_module
 
 tags:
   - js      # Supports JavaScript
