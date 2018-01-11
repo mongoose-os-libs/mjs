@@ -11,4 +11,4 @@ conds:
   - when: defined(build_vars.FLASH_SIZE)
     apply:
       filesystem:
-        - -${mos.modules.mjs.path}/mjs/lib/api_dataview.js
+        - -${mos.modules.mjs_module.path}/mjs/lib/api_dataview.js
