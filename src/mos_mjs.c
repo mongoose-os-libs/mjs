@@ -3,6 +3,9 @@
  * All rights reserved
  */
 
+#include "mos_mjs.h"
+
+#include "common/cs_dbg.h"
 #include "common/platform.h"
 
 #include "mgos_app.h"
@@ -15,8 +18,6 @@
 #ifdef MGOS_HAVE_WIFI
 #include "mgos_wifi.h"
 #endif
-
-#include "mos_mjs.h"
 
 struct mjs *mjs = NULL;
 
