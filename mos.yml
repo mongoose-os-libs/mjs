@@ -3,8 +3,6 @@ description: JavaScript engine
 type: lib
 version: 1.0
 
-platforms: [ cc3220, esp32, esp8266 ]
-
 sources:
   - src
   - ${mos.modules.mjs_module.path}/mjs.c
