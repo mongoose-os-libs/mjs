@@ -57,5 +57,5 @@ let Sys = {
   // ##**`Sys.wdt_disable()`**
   // Disable watchdog.
   // Return value: none.
-  wdt_disable: ffi('void mgos_wdt_disable(void)');
+  wdt_disable: ffi('void mgos_wdt_disable(void)')
 };
