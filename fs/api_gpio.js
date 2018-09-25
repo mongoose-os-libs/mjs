@@ -38,6 +38,14 @@ let GPIO = {
   // Return value: 1 in case of success, 0 otherwise.
   disable_int: ffi('int mgos_gpio_disable_int(int)'),
 
+  // ## **`GPIO.blink(pin, on_ms, off_ms)`**
+  // A utility function that takes care of blinking an LED.
+  // The pin must be configured as output first.
+  // On (output "1") and off ("0") times are specified in milliseconds.
+  // Set to (0, 0) to disable.
+  // Return value: 1 on success, 0 on failure.
+  blink: ffi('int mgos_gpio_blink(int, int, int)'),
+
   // ## **`GPIO.set_int_handler(pin, mode, handler)`**
   // Install GPIO interrupt handler. `mode` could be one of: `GPIO.INT_NONE`,
   // `GPIO.INT_EDGE_POS`, `GPIO.INT_EDGE_NEG`, `GPIO.INT_EDGE_ANY`,
