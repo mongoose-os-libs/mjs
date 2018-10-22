@@ -29,6 +29,13 @@ let Event = {
   addGroupHandler: ffi(
       'bool mgos_event_add_group_handler(int, void(*)(int, void *, userdata), userdata)'),
 
+  // ## **`Event.on(event_num, callback, userdata)`**
+  // Alias for Event.addHandler
+  on: function(ev, cb, cbdata) {
+    this.addHandler(ev, cb, cbdata);
+    return this;
+  },
+
   // ## **`Event.regBase(base_event_number, name)`**
   // Register a base event number in order to prevent event number conflicts.
   // Use `Event.baseNumber(id)` to get `base_event_number`; `name` is an
@@ -56,7 +63,7 @@ let Event = {
   // it and prevent event number conflicts. (see example there)
   baseNumber: function(id) {
     if (id.length !== 3) {
-      die("Base event id should have exactly 3 chars");
+      die('Base event id should have exactly 3 chars');
       return -1;
     }
 
@@ -78,7 +85,7 @@ let Event = {
   _gdl: ffi('int mgos_debug_event_get_len(void *)'),
 };
 
-Event.SYS = Event.baseNumber("MOS");
+Event.SYS = Event.baseNumber('MOS');
 
 // NOTE: INIT_DONE is unavailable here because init.js is executed in
 // INIT_DONE hook
@@ -99,4 +106,12 @@ Event.REBOOT = Event.SYS + 2;
 //
 // In the callback, use `OTA.evdataOtaStatusMsg(evdata)` from `api_ota.js` to
 // get the OTA status message.
-Event.OTA_STATUS = Event.SYS + 3;
+Event.OTA_TIME_CHANGED = Event.SYS + 3;
+
+// ## **`Event.CLOUD_CONNECTED`**
+// Triggered when device is connected to the cloud (mqtt, dash)
+Event.CLOUD_CONNECTED = Event.SYS + 4;
+
+// ## **`Event.CLOUD_DISCONNECTED`**
+// Triggered when device is disconnected from the cloud
+Event.CLOUD_DISCONNECTED = Event.SYS + 5;
