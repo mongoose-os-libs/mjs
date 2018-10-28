@@ -14,7 +14,8 @@ let Sys = {
 
   // ## **`Sys.calloc(nmemb, size)`**
   // Allocate a memory region.
-  // Note: currently memory allocated this way must be explicitly released with `free()`.
+  // Note: currently memory allocated this way must be explicitly released with
+  // `free()`.
   malloc: ffi('void *malloc(int)'),
   free: ffi('void free(void *)'),
 
@@ -28,7 +29,7 @@ let Sys = {
 
   // ## **`Sys.reboot(us)`**
   // Reboot the system after `us` microseconds. Return value: none.
-  reboot: ffi('void mgos_system_restart(int)'),
+  reboot: ffi('void mgos_system_restart()'),
 
   // ## **`Sys.uptime()`**
   // Return number of seconds since last reboot.
