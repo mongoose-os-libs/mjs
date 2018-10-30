@@ -6,13 +6,23 @@ let GPIO = {
   MODE_INPUT: 0,
   MODE_OUTPUT: 1,
 
-  // ## **`GPIO.set_pull(pin, type)`**
+  // ## **`GPIO.set_pull(pin, pull_type)`**
   // Set GPIO pin pull type.
-  // `type` can be either `GPIO.PULL_NONE`, `GPIO.PULL_UP`, or `GPIO.PULL_DOWN`.
+  // `pull_type` can be either `GPIO.PULL_NONE`, `GPIO.PULL_UP`, or `GPIO.PULL_DOWN`.
   set_pull: ffi('int mgos_gpio_set_pull(int,int)'),
   PULL_NONE: 0,
   PULL_UP: 1,
   PULL_DOWN: 2,
+
+  // ## **`GPIO.setup_input(pin, pull_type)`**
+  // Setup pin as input and configure pull type.
+  // `pull_type` can be either `GPIO.PULL_NONE`, `GPIO.PULL_UP`, or `GPIO.PULL_DOWN`.
+  setup_input: ffi('int mgos_gpio_setup_input(int,int)'),
+
+  // ## **`GPIO.setup_output(pin, level)`**
+  // Setup pin as output and set initial level, 0 or 1.
+  // Avoids spurious transitions: applies level first, then sets mode.
+  setup_output: ffi('int mgos_gpio_setup_output(int,int)'),
 
   // ## **`GPIO.toggle(pin)`**
   // Toggle the level of certain GPIO pin.
