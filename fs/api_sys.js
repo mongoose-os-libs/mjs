@@ -27,8 +27,12 @@ let Sys = {
   // Return free available RAM in bytes.
   free_ram: ffi('int mgos_get_free_heap_size()'),
 
-  // ## **`Sys.reboot(us)`**
-  // Reboot the system after `us` microseconds. Return value: none.
+  // ## **`Sys.reboot()`**
+  // Reboot the system directly. Return value: none.
+  //
+  // Hint: as no waiting duration is accepted any more for this call,
+  // here is a workaround to reboot after some milliseconds (here e.g. 2000):
+  // *** Timer.set(2000, 0, function() { Sys.reboot(); }, null); ***
   reboot: ffi('void mgos_system_restart()'),
 
   // ## **`Sys.uptime()`**
