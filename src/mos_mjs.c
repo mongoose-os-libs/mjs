@@ -22,8 +22,8 @@
 
 #include "mgos_app.h"
 #include "mgos_dlsym.h"
-#include "mgos_hal.h"
 #include "mgos_event.h"
+#include "mgos_hal.h"
 #include "mgos_mongoose.h"
 #include "mgos_net.h"
 #include "mgos_sys_config.h"
@@ -35,18 +35,29 @@ struct mjs *mjs = NULL;
 
 /*
  * Runs when all initialization (all libs + app) is done
+ * Execute two files:
+ *    - init.js, which is supposed to be included in the firmware and thus
+ *      overridden by the OTA
+ *    - app.js, which is NOT supposed to be included in the FW and thus
+ *      it survives OTA.
+ * For example, if you want to customize demo-js built-in firmware by your
+ * own custom code that survives OTA, upload your own app.js to the device.
+ * Then you can update the device and app.js will be preserved.
  */
 static void s_init_done_handler(int ev, void *ev_data, void *userdata) {
   int mem1, mem2;
 
   mem1 = mgos_get_free_heap_size();
-  mjs_err_t err = mjs_exec_file(mjs, "init.js", NULL);
-  if (err != MJS_OK) {
+  LOG(LL_DEBUG, ("Trying to run init.js ..."));
+  if (mjs_exec_file(mjs, "init.js", NULL) != MJS_OK) {
     mjs_print_error(mjs, stdout, NULL, 1 /* print_stack_trace */);
   }
+  LOG(LL_DEBUG, ("Trying to run app.js ..."));
+  if (mjs_exec_file(mjs, "app.js", NULL) != MJS_OK) {
+    mjs_print_error(mjs, stdout, NULL, 1);
+  }
   mem2 = mgos_get_free_heap_size();
-  LOG(LL_DEBUG,
-      ("mJS memory stat: before init.js: %d after init.js: %d", mem1, mem2));
+  LOG(LL_DEBUG, ("mJS RAM stat: before user code: %d after: %d", mem1, mem2));
 
   (void) ev;
   (void) ev_data;
