@@ -33,6 +33,15 @@
 
 struct mjs *mjs = NULL;
 
+static void run_if_exists(const char *fname) {
+  struct stat st;
+  if (stat(fname, &st) != 0) return;
+  LOG(LL_DEBUG, ("Trying to run %s...", fname));
+  if (mjs_exec_file(mjs, fname, NULL) != MJS_OK) {
+    mjs_print_error(mjs, stderr, NULL, 1 /* print_stack_trace */);
+  }
+}
+
 /*
  * Runs when all initialization (all libs + app) is done
  * Execute two files:
@@ -48,14 +57,8 @@ static void s_init_done_handler(int ev, void *ev_data, void *userdata) {
   int mem1, mem2;
 
   mem1 = mgos_get_free_heap_size();
-  LOG(LL_DEBUG, ("Trying to run init.js ..."));
-  if (mjs_exec_file(mjs, "init.js", NULL) != MJS_OK) {
-    mjs_print_error(mjs, stdout, NULL, 1 /* print_stack_trace */);
-  }
-  LOG(LL_DEBUG, ("Trying to run app.js ..."));
-  if (mjs_exec_file(mjs, "app.js", NULL) != MJS_OK) {
-    mjs_print_error(mjs, stdout, NULL, 1);
-  }
+  run_if_exists("init.js");
+  run_if_exists("app.js");
   mem2 = mgos_get_free_heap_size();
   LOG(LL_DEBUG, ("mJS RAM stat: before user code: %d after: %d", mem1, mem2));
 
