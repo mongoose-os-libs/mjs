@@ -22,6 +22,7 @@ let Timer = {
   set: ffi('int mgos_set_timer(int,int,void(*)(userdata),userdata)'),
 
   REPEAT: 1,
+  RUN_NOW: 2,
 
   // ## **`Timer.now()`**
   // Return current time as double value, UNIX epoch (seconds since 1970).
