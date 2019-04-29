@@ -12,7 +12,7 @@ filesystem:
   - fs
   - ${mos.modules.mjs_module.path}/mjs/lib/api_*.js
   - ${mos.modules.mongoose_os.path}/fw/mjs_api/api_*.js
-  - ${mos.modules.mongoose_os.path}/fw/platforms/${arch}/mjs_api/api_*.js
+  - ${mos.modules.mongoose_os.path}/platforms/${arch}/mjs_api/api_*.js
   - "@all_libs/mjs_fs"
 config_schema:
   - ["mjs", "o", {title: "mJS settings"}]
