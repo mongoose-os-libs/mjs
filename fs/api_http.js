@@ -56,7 +56,7 @@ let HTTP = {
   // error string, `data` - optional object with request parameters.
   // By default, `GET` method is used. If `data` is specified, POST method
   // is used, the `data` object gets `JSON.stringify()`-ed and used as a
-  // HTTP message body.
+  // HTTP message body unless `method` is set.
   //
   // In order to send HTTPS request, use `https://...` URL. Note that in that
   // case `ca.pem` file must contain CA certificate of the requested server.
@@ -65,6 +65,7 @@ let HTTP = {
   // ```javascript
   // HTTP.query({
   //   url: 'http://httpbin.org/post',
+  //   method: 'POST',    // Optional method
   //   headers: { 'X-Foo': 'bar' },     // Optional - headers
   //   data: {foo: 1, bar: 'baz'},      // Optional. If set, JSON-encoded and POST-ed
   //   success: function(body, full_http_msg) { print(body); },
@@ -82,7 +83,7 @@ let HTTP = {
         let opts = ud.opts;
         let body = opts.data || '';
         if (typeof(body) !== 'string') body = JSON.stringify(body);
-        let meth = body ? 'POST' : 'GET';
+        let meth = opts.method || (body ? 'POST' : 'GET');
         let host = 'Host: ' + ud.u.addr + '\r\n';
         let cl = 'Content-Length: ' + JSON.stringify(body.length) + '\r\n';
         let hdrs = opts.headers || {};
