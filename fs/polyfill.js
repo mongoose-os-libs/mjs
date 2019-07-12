@@ -2,7 +2,21 @@
 let console = {log: print, error: print};
 let module = {exports: null, _cache: {}};
 
+function __resolvePath(p) {
+    let sf = '.js';
+    let f = p.length - 3;
+    let e = p.indexOf(sf, f < 0 ? 0 : f);
+    if (e === -1) {
+        return p + sf;
+    }
+
+    return p;
+}
+
 function require(path) {
+    // Add .js if not set
+    path = __resolvePath(path);
+
     // Prevent duplicate load, return from cache
     let c = module._cache[path];
     if (c !== undefined) {
