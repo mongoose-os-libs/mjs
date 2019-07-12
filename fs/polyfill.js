@@ -15,7 +15,7 @@ function require(path) {
     // Add module to cache
     c = module._cache[path] = module.exports;
     // clean exports data to prevent modules duplication
-    module.exports = undefined;
+    module.exports = null;
 
     return c;
 }
