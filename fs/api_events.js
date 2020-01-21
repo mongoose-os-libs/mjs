@@ -101,12 +101,9 @@ Event.LOG = Event.SYS + 1;
 // is irrelevant for this event.
 Event.REBOOT = Event.SYS + 2;
 
-// ## **`Event.OTA_STATUS`**
-// System event which is triggered when OTA status changes.
-//
-// In the callback, use `OTA.evdataOtaStatusMsg(evdata)` from `api_ota.js` to
-// get the OTA status message.
-Event.OTA_TIME_CHANGED = Event.SYS + 3;
+// ## **`Event.TIME_CHANGED`**
+// System event which is triggered when time is changed with `mgos_settimeofday()`.
+Event.TIME_CHANGED = Event.SYS + 3;
 
 // ## **`Event.CLOUD_CONNECTED`**
 // Triggered when device is connected to the cloud (mqtt, dash)
