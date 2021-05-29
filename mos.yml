@@ -18,7 +18,7 @@ config_schema:
   - ["mjs", "o", {title: "mJS settings"}]
   - ["mjs.generate_jsc", "b", true, {title: "Generate .jsc file when executing any .js file"}]
 modules:
-  - origin: https://github.com/cesanta/mjs
+  - location: https://github.com/cesanta/mjs
     name: mjs_module
 
 tags:
@@ -31,4 +31,4 @@ manifest_version: 2017-09-29
 
 # Temporary, while root manifest change propagates (2018/03/29).
 libs:
-  - origin: https://github.com/mongoose-os-libs/core
+  - location: https://github.com/mongoose-os-libs/core
