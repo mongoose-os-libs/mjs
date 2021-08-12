@@ -36,7 +36,11 @@ let GPIO = {
   // ## **`GPIO.read(pin)`**
   // Read GPIO pin level. Return value: 0 or 1.
   read: ffi('int mgos_gpio_read(int)'),
-
+  
+  // ## **`GPIO.read(pin)`**
+  // Read GPIO pin level for GPIO in OUTPUT state. Return value: 0 or 1.
+  read_out: ffi ('int mgos_gpio_read_out(int)'),
+  
   // ## **`GPIO.enable_int(pin)`**
   // Enable interrupts on GPIO pin.
   // This function must be called AFTER the interrupt handler is installed.
