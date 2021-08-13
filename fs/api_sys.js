@@ -12,7 +12,7 @@ let Sys = {
     return buf;
   },
 
-  // ## **`Sys.calloc(nmemb, size)`**
+  // ## **`Sys.malloc(size)`**
   // Allocate a memory region.
   // Note: currently memory allocated this way must be explicitly released with
   // `free()`.
