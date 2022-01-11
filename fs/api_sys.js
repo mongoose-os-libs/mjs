@@ -43,5 +43,20 @@ let Sys = {
   // ## **`Sys.wdt_feed()`**
   // Feed the watchdog timer.
   // Return value: none.
-  wdt_feed: ffi('void mgos_wdt_feed()')
+  wdt_feed: ffi('void mgos_wdt_feed()'),
+  
+  // ##**`Sys.wdt_set_timeout(seconds)`**
+  // Set watchdog timeout in seconds.
+  // Return value: none.
+  wdt_set_timeout: ffi('void mgos_wdt_set_timeout(int)'),
+  
+  // ##**`Sys.wdt_enable()`**
+  // Enable watchdog.
+  // Return value: none.
+  wdt_enable: ffi('void mgos_wdt_enable(void)'),
+  
+  // ##**`Sys.wdt_disable()`**
+  // Disable watchdog.
+  // Return value: none.
+  wdt_disable: ffi('void mgos_wdt_disable(void)')
 };
